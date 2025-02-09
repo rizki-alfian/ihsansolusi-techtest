@@ -61,4 +61,4 @@ migrate -database "postgres://{{your_db_user}}:{{your_db_pass}}@{{you_container_
 
 
 Here the Postman Documentation:
-https://documenter.getpostman.com/view/40407342/2sAYJ6BeYw
+https://documenter.getpostman.com/view/40407342/2sAYX9kfCi
