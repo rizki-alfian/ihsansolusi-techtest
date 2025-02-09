@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres                  # THIS VALUE REPRESENT HOST DATABASE AND MUST BE THE SAME AS THE ENVIRONMENT IN ALL SERVICES
+    restart: always
+    environment:
+      POSTGRES_USER: ihsansolusi-user         # THE VALUE MUST BE THE SAME AS THE ENVIRONMENT IN ALL SERVICES
+      POSTGRES_PASSWORD: ihsansolusi-pass     # THE VALUE MUST BE THE SAME AS THE ENVIRONMENT IN ALL SERVICES
+      POSTGRES_DB: ihsansolusi                # THE VALUE MUST BE THE SAME AS THE ENVIRONMENT IN ALL SERVICES
+    ports:
+      - "5432:5432"                           # THE VALUE MUST BE THE SAME AS THE ENVIRONMENT IN ALL SERVICES
+    volumes:
+      - ihsansolusi_postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ihsansolusi-user -d ihsansolusi"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  ihsansolusi-account:
+    build:
+      context: ./ihsansolusi-account
+    container_name: ihsansolusi-account
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./ihsansolusi-account/.env
+    networks:
+      - app-network
+
+
+volumes:
+  ihsansolusi_postgres_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
